@@ -13,7 +13,7 @@ lessons/
   04_memory.py              making a model remember (message history, by hand)
   05_agents_tools.py        agents + tools with LangGraph (it can *do* things)
 samples/company_handbook.md sample document for lesson 03 to answer questions about
-shared/llm_factory.py       one helper that swaps OpenAI <-> Ollama (read this first)
+shared/llm_factory.py       provider registry: swap OpenAI / Claude / Gemini / Ollama
 ```
 
 ## The one mental model (read this before anything)
@@ -51,15 +51,19 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 # 2. install deps
 pip install -r requirements.txt
 
-# 3. pick a model provider -- either is fine
+# 3. pick a model provider -- any of these works, nothing else in the
+#    repo knows or cares which one you picked
 cp .env.example .env
 
-#   Option A – OpenAI (fastest to get going, costs pennies)
-#     put your key in OPENAI_API_KEY=
-
-#   Option B – Ollama (free, runs locally; great for tinkering offline)
-#     brew install ollama && ollama pull llama3.2
-#     and set LLM_PROVIDER=ollama in .env
+#   OpenAI   -> set LLM_PROVIDER=openai    + OPENAI_API_KEY
+#   Claude   -> set LLM_PROVIDER=anthropic + ANTHROPIC_API_KEY
+#   Gemini   -> set LLM_PROVIDER=google    + GOOGLE_API_KEY
+#   Groq     -> set LLM_PROVIDER=groq      + GROQ_API_KEY
+#   Ollama   -> set LLM_PROVIDER=ollama    (free / offline: brew install ollama
+#                                            && ollama pull llama3.2 && ollama serve)
+#
+# RAG (lesson 03) also needs `EMBEDDING_PROVIDER`. Anthropic and Groq have no
+# embedding API, so set it to openai / google / ollama regardless.
 ```
 
 Run a lesson from the **project root** (that's how the imports work):
@@ -76,7 +80,10 @@ python -m lessons.01_llm_basics
 > is just a *list of messages*.
 >
 > *Do first*: `python -m lessons.01_llm_basics`. Then open `shared/llm_factory.py`
-> — that's the pattern for "swap providers by config, never by code".
+> — a **provider registry**. `CHAT_MODEL_FACTORIES` maps `"openai" / "anthropic" /
+> "google" / "groq" / "ollama"` to tiny factory functions. Adding a provider =
+> adding one function + one registry row. The lessons never import a vendor
+> directly, so switching models is a one-line `.env` change.
 
 > **Lesson 02 — Prompts, parsers, and LCEL**
 > The most important file in the repo. `ChatPromptTemplate` turns variables into
@@ -134,7 +141,8 @@ python -m lessons.01_llm_basics
 
 | Symptom | Fix |
 |---|---|
-| `RuntimeError: Missing OPENAI_API_KEY` | Put a key in `.env`, or set `LLM_PROVIDER=ollama`. |
+| `RuntimeError: Missing ..._API_KEY` | Put the matching key in `.env`, or set `LLM_PROVIDER=ollama`. Check which key is needed with `python -m shared.llm_factory`. |
+| Lesson 03 says "no embedding API" | Anthropic/Groq can't embed. Set `EMBEDDING_PROVIDER=openai` (or google/ollama). |
 | Ollama connection refused | `ollama serve`, then `ollama pull llama3.2` / `ollama pull nomic-embed-text`. |
 | Wrong/old answers in lesson 03 | Delete `data/chroma/` and rerun (stale chunks). |
 | Imports break (`python lessons/01_llm_basics.py`) | Always run as `python -m lessons.01_llm_basics` from the project root. |
