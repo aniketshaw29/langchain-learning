@@ -14,6 +14,7 @@ lessons/
   05_agents_tools.py        agents + tools with LangGraph (it can *do* things)
 samples/company_handbook.md sample document for lesson 03 to answer questions about
 shared/llm_factory.py       provider registry: swap OpenAI / Claude / Gemini / Ollama
+docs/                       markdown reference per lesson (see "The docs" below)
 ```
 
 ## The one mental model (read this before anything)
@@ -71,6 +72,25 @@ Run a lesson from the **project root** (that's how the imports work):
 ```bash
 python -m lessons.01_llm_basics
 ```
+
+## The docs
+
+Each lesson also ships as a standalone markdown reference under `docs/`:
+
+| Doc | Covers |
+|---|---|
+| [00 — getting started](docs/00-getting-started.md) | setup, choose a provider, run a lesson |
+| [01 — models and messages](docs/01-models-and-messages.md) | invoke/stream/batch, Message types, temperature |
+| [02 — prompts & LCEL](docs/02-prompts-and-chains.md) | templates, parsers, `\|` pipes, fan-out + practice |
+| [03 — RAG](docs/03-rag.md) | your-own-docs Q&A, chunking, grounding, debugging |
+| [04 — memory](docs/04-memory.md) | message history by hand → LangGraph checkpoints |
+| [05 — agents & tools](docs/05-agents-and-tools.md) | `@tool`, `create_react_agent`, streaming traces |
+| [concepts](docs/concepts.md) | the vocabulary + one diagram to rule them all |
+| [troubleshooting](docs/troubleshooting.md) | errors + the debugging-in-order workflow |
+
+The code comments and the `README` give you the *how*; the docs give you the
+*why* and the "do this next" practice drills. Files in `docs/` are the true
+reference — this README is just the roadmap.
 
 ## The curriculum
 
