@@ -1,0 +1,14 @@
+# Virtual envs
+.venv/
+venv/
+
+# Secrets — never commit your keys
+.env
+
+# Vector DB + generated data
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
